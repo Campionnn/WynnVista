@@ -207,7 +207,7 @@ public class VoxyController implements IRenderDistanceController {
 
         static int getRenderDistance() {
             try {
-                return me.cortex.voxy.client.config.VoxyConfig.CONFIG.sectionRenderDistance;
+                return (int) me.cortex.voxy.client.config.VoxyConfig.CONFIG.sectionRenderDistance;
             } catch (Exception e) {
                 LOGGER.error("Failed to get Voxy render distance", e);
                 return 32; // Default fallback
