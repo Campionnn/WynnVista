@@ -222,6 +222,14 @@ public class VoxyController implements IRenderDistanceController {
             }
         }
 
+        private static me.cortex.voxy.client.core.VoxyRenderSystem getRenderSystem(Object worldRenderer) {
+            if (!(worldRenderer instanceof me.cortex.voxy.client.core.IGetVoxyRenderSystem voxyAccessor)) {
+                return null;
+            }
+
+            return voxyAccessor.voxy$getRenderSystem();
+        }
+
         static boolean isSystemAvailable() {
             try {
                 MinecraftClient client = MinecraftClient.getInstance();
@@ -229,11 +237,7 @@ public class VoxyController implements IRenderDistanceController {
                     return false;
                 }
 
-                if (client.worldRenderer instanceof me.cortex.voxy.client.core.IGetVoxyRenderSystem voxyAccessor) {
-                    me.cortex.voxy.client.core.VoxyRenderSystem system = voxyAccessor.getVoxyRenderSystem();
-                    return system != null;
-                }
-                return false;
+                return getRenderSystem(client.worldRenderer) != null;
             } catch (Exception e) {
                 return false;
             }
@@ -246,15 +250,13 @@ public class VoxyController implements IRenderDistanceController {
                     return false;
                 }
 
-                if (client.worldRenderer instanceof me.cortex.voxy.client.core.IGetVoxyRenderSystem voxyAccessor) {
-                    me.cortex.voxy.client.core.VoxyRenderSystem system = voxyAccessor.getVoxyRenderSystem();
-                    if (system != null) {
-                        // Update config first
-                        me.cortex.voxy.client.config.VoxyConfig.CONFIG.sectionRenderDistance = distance;
-                        // Then update live system
-                        system.setRenderDistance(distance);
-                        return true;
-                    }
+                me.cortex.voxy.client.core.VoxyRenderSystem system = getRenderSystem(client.worldRenderer);
+                if (system != null) {
+                    // Update config first
+                    me.cortex.voxy.client.config.VoxyConfig.CONFIG.sectionRenderDistance = distance;
+                    // Then update live system
+                    system.setRenderDistance(distance);
+                    return true;
                 }
                 return false;
             } catch (Exception e) {
